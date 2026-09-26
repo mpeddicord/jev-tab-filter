@@ -236,10 +236,21 @@ function renderThreshold() {
 
 function renderRecent() {
   $('recent').replaceChildren(...cfg.recent.map((topic) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+
     const b = document.createElement('button');
     b.textContent = b.title = topic;
     b.onclick = () => { $('topic').value = topic; save({ topic }); disarm(); guard(scan); };
-    return b;
+
+    const x = document.createElement('button');
+    x.className = 'x';
+    x.textContent = '×';
+    x.title = x.ariaLabel = `Remove "${topic}"`;
+    x.onclick = () => { save({ recent: cfg.recent.filter((r) => r !== topic) }); renderRecent(); };
+
+    chip.append(b, x);
+    return chip;
   }));
 }
 
