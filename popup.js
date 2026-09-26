@@ -22,7 +22,10 @@ $('topic').focus();
 
 // ---------- events ----------
 
-$('key').addEventListener('change', () => save({ key: $('key').value.trim() }));
+$('key').addEventListener('change', () => {
+  save({ key: $('key').value.trim() });
+  if (cfg.key) $('settings').open = false;
+});
 $('topic').addEventListener('input', () => { disarm(); save({ topic: $('topic').value }); });
 $('topic').addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); guard(scan); }
