@@ -17,7 +17,7 @@ $('topic').value = cfg.topic;
 $('threshold').value = cfg.threshold;
 $('undo').hidden = !cfg.undo.length;
 if (!cfg.key) $('settings').open = true;
-renderScope(); renderRecent(); renderThreshold(); renderList();
+renderScope(); renderRecent(); renderThreshold(); renderList(); renderRestore();
 $('topic').focus();
 
 // ---------- events ----------
@@ -36,7 +36,7 @@ $('threshold').addEventListener('input', () => {
 $('scope').addEventListener('click', (e) => {
   const scope = e.target.closest('button')?.dataset.scope;
   if (!scope) return;
-  save({ scope }); disarm(); renderScope();
+  save({ scope }); disarm(); renderScope(); renderRestore();
   if (S.scanned) guard(scan);
 });
 document.querySelectorAll('[data-action]').forEach((b) =>
@@ -44,7 +44,7 @@ document.querySelectorAll('[data-action]').forEach((b) =>
 $('preview').addEventListener('click', () => guard(scan));
 $('restore').addEventListener('click', () => guard(async () => {
   const n = await restoreHidden();
-  status(n ? `Showing ${n} hidden tabs again.` : 'No hidden tabs.');
+  status(n ? `Showing ${n} hidden tab${n === 1 ? "" : "s"} again.` : "No hidden tabs.");
   if (S.scanned) await scan();
 }));
 $('undo').addEventListener('click', () => guard(undoClose));
@@ -58,7 +58,7 @@ async function guard(fn) {
   if (S.busy) return;
   S.busy = true; document.body.classList.add('busy');
   try { await fn(); } catch (e) { status(e.message, 'error'); }
-  finally { S.busy = false; document.body.classList.remove('busy'); }
+  finally { S.busy = false; document.body.classList.remove('busy'); renderRestore(); }
 }
 
 // ---------- scoring ----------
@@ -190,11 +190,18 @@ function disarm() {
   closeBtn.innerHTML = closeHtml;
 }
 
-async function restoreHidden() {
+async function hiddenGroups() {
   const where = cfg.scope === 'window' ? { windowId: chrome.windows.WINDOW_ID_CURRENT } : {};
-  const groups = (await chrome.tabGroups.query(where)).filter((g) => g.title?.startsWith(HIDE_PREFIX));
+  return (await chrome.tabGroups.query(where)).filter((g) => g.title?.startsWith(HIDE_PREFIX));
+}
+
+async function renderRestore() {
+  $('restore').disabled = !(await hiddenGroups()).length;
+}
+
+async function restoreHidden() {
   let n = 0;
-  for (const g of groups) {
+  for (const g of await hiddenGroups()) {
     const tabs = await chrome.tabs.query({ groupId: g.id });
     n += tabs.length;
     await chrome.tabs.ungroup(ids(tabs));

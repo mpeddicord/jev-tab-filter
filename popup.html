@@ -67,7 +67,8 @@
 
   .toolbar { display: flex; gap: 6px; margin: 10px 0 6px; }
   .toolbar button { flex: 1; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: none; }
-  .toolbar button:hover { border-color: var(--accent); }
+  .toolbar button:hover:not(:disabled) { border-color: var(--accent); }
+  .toolbar button:disabled { opacity: .4; cursor: default; }
 
   details { position: relative; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
   .panel { position: absolute; left: 0; right: 0; bottom: 100%; margin-bottom: 6px; padding: 4px 12px 12px; background: var(--bg);
