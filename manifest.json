@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Theme Tab Filter for Jev",
   "short_name": "Tab Filter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Type a theme. Group, hide, or close your tabs by what they're about, judged by the TypeSafe Jev model.",
   "homepage_url": "https://github.com/mpeddicord/jev-tab-filter",
   "permissions": ["tabs", "tabGroups", "storage", "sessions", "favicon"],

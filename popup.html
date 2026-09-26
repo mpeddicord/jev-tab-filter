@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>Theme Tab Filter</title>
 <style>
-  :root {
+  :root { color-scheme: light dark;
     --bg: #fff; --fg: #1d1d1f; --muted: #6b6b70; --line: #e3e3e6; --card: #f5f5f7;
     --accent: #2563eb; --accent-fg: #fff; --danger: #c62828; --warn: #8a5a00; --chip: #eef2ff;
   }
@@ -13,7 +13,9 @@
     }
   }
   * { box-sizing: border-box; }
-  body { width: 380px; margin: 0; padding: 14px; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; }
+  body > * { flex: none; }
+  html, body { overflow: hidden; }
+  body { width: 380px; max-height: 600px; display: flex; flex-direction: column; margin: 0; padding: 14px; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; }
   button { font: inherit; color: inherit; cursor: pointer; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
@@ -23,7 +25,7 @@
   .seg button { border: 0; background: none; color: var(--muted); padding: 4px 10px; }
   .seg button[aria-pressed=true] { background: var(--accent); color: var(--accent-fg); }
 
-  textarea { width: 100%; resize: vertical; font: inherit; padding: 8px 10px; border: 1px solid var(--line);
+  textarea { width: 100%; resize: vertical; max-height: 120px; flex: none; font: inherit; padding: 8px 10px; border: 1px solid var(--line);
     border-radius: 8px; background: var(--card); color: var(--fg); }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .chips:empty { display: none; }
@@ -48,7 +50,7 @@
   #status.error { color: var(--danger); }
   #status.warn { color: var(--warn); }
 
-  #list { max-height: 300px; overflow-y: auto; border-top: 1px solid var(--line); }
+  #list { flex: 1 1 auto; min-height: 0; overflow-y: auto; border-top: 1px solid var(--line); }
   h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 10px 0 4px; }
   .tab { display: flex; align-items: center; gap: 8px; padding: 3px 2px; border-radius: 6px; }
   .tab:hover { background: var(--card); }
@@ -62,9 +64,9 @@
     background: linear-gradient(to right, color-mix(in srgb, var(--accent) 28%, transparent) calc(var(--p) * 100%), transparent 0); }
   .empty { color: var(--muted); text-align: center; padding: 18px 8px; margin: 0; }
 
-  footer { display: flex; gap: 6px; margin-top: 10px; }
-  footer button { flex: 1; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: none; }
-  footer button:hover { border-color: var(--accent); }
+  .toolbar { display: flex; gap: 6px; margin-top: 10px; }
+  .toolbar button { flex: 1; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: none; }
+  .toolbar button:hover { border-color: var(--accent); }
 
   details { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }
   summary { cursor: pointer; color: var(--muted); }
@@ -73,7 +75,7 @@
   details p { margin: 4px 0 8px; color: var(--muted); font-size: 12px; }
   details button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 8px; background: none; }
 
-  body.busy .actions button, body.busy footer button { opacity: .5; pointer-events: none; }
+  body.busy .actions button, body.busy .toolbar button { opacity: .5; pointer-events: none; }
 </style>
 
 <header>
@@ -100,14 +102,15 @@
   <output id="thresholdOut" for="threshold"></output>
 </div>
 
-<div id="status" role="status"></div>
-<div id="list"></div>
-
-<footer>
+<div class="toolbar">
   <button id="preview">Preview matches</button>
   <button id="restore">Show hidden tabs</button>
   <button id="undo" hidden>Undo close</button>
-</footer>
+</div>
+
+<div id="status" role="status"></div>
+<div id="list"></div>
+
 
 <details id="settings">
   <summary>Settings</summary>
